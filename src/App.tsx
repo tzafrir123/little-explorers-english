@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import WordPicturePage from "./pages/WordPicturePage.tsx";
+import SpellWordPage from "./pages/SpellWordPage.tsx";
+import QuizPage from "./pages/QuizPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +19,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/game/word-picture" element={<WordPicturePage />} />
+          <Route path="/game/spell-word" element={<SpellWordPage />} />
+          <Route path="/game/quiz" element={<QuizPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
