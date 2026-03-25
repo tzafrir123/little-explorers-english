@@ -164,11 +164,8 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
       <div className="min-h-screen flex flex-col items-center p-4 pt-8" dir="rtl">
         <GameHeader
           title="השלמת מילים במשפט"
-          emoji="📝"
-          onBack={onBack}
-          round={0}
-          totalRounds={TOTAL_ROUNDS}
           score={0}
+          total={TOTAL_ROUNDS}
         />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -220,9 +217,8 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
     return (
       <GameComplete
         score={score}
-        totalRounds={TOTAL_ROUNDS}
+        total={TOTAL_ROUNDS}
         onRestart={handleRestart}
-        onBack={onBack}
       />
     );
   }
@@ -235,11 +231,8 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
     <div className="min-h-screen flex flex-col items-center p-4 pt-8" dir="rtl">
       <GameHeader
         title={`השלמת מילים - רמה ${level}`}
-        emoji="📝"
-        onBack={onBack}
-        round={round + 1}
-        totalRounds={TOTAL_ROUNDS}
         score={score}
+        total={TOTAL_ROUNDS}
       />
 
       <div className="w-full max-w-lg mt-6">
