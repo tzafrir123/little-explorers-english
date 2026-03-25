@@ -26,6 +26,14 @@ const games = [
     color: "bg-accent text-accent-foreground",
     path: "/game/quiz",
   },
+  {
+    id: "memory",
+    title: "משחק זיכרון",
+    emoji: "🧠",
+    description: "מצאו זוגות של מילים ותמונות תואמות",
+    color: "bg-sunshine text-sunshine-foreground",
+    path: "/game/memory",
+  },
 ];
 
 const Index = () => {
