@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
@@ -8,9 +8,9 @@ const ROUNDS = 8;
 
 type QuestionType = "en-to-he" | "he-to-en" | "emoji-to-en";
 
-function generateRound(): { correct: WordItem; options: WordItem[]; type: QuestionType } {
-  const correct = getRandomWords(1)[0];
-  const wrong = getRandomWords(3, [correct]);
+function generateRound(usedWords: WordItem[]): { correct: WordItem; options: WordItem[]; type: QuestionType } {
+  const correct = getRandomWords(1, usedWords)[0];
+  const wrong = getRandomWords(3, [...usedWords, correct]);
   const options = shuffle([correct, ...wrong]);
   const types: QuestionType[] = ["en-to-he", "he-to-en", "emoji-to-en"];
   const type = types[Math.floor(Math.random() * types.length)];
@@ -18,10 +18,15 @@ function generateRound(): { correct: WordItem; options: WordItem[]; type: Questi
 }
 
 const QuizGame = () => {
+  const usedWordsRef = useRef<WordItem[]>([]);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
-  const [currentRound, setCurrentRound] = useState(generateRound);
+  const [currentRound, setCurrentRound] = useState(() => {
+    const r = generateRound([]);
+    usedWordsRef.current = [r.correct];
+    return r;
+  });
   const [isComplete, setIsComplete] = useState(false);
 
   const getQuestion = () => {
@@ -56,8 +61,10 @@ const QuizGame = () => {
         if (round + 1 >= ROUNDS) {
           setIsComplete(true);
         } else {
+          const next = generateRound(usedWordsRef.current);
+          usedWordsRef.current = [...usedWordsRef.current, next.correct];
           setRound((r) => r + 1);
-          setCurrentRound(generateRound());
+          setCurrentRound(next);
           setSelected(null);
         }
       }, 1000);
@@ -66,10 +73,13 @@ const QuizGame = () => {
   );
 
   const restart = () => {
+    usedWordsRef.current = [];
+    const next = generateRound([]);
+    usedWordsRef.current = [next.correct];
     setRound(0);
     setScore(0);
     setSelected(null);
-    setCurrentRound(generateRound());
+    setCurrentRound(next);
     setIsComplete(false);
   };
 
@@ -121,7 +131,7 @@ const QuizGame = () => {
                   transition={{ delay: i * 0.08 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => handleSelect(word)}
-                  className={`card-bounce ${bgClass} rounded-2xl p-4 text-right font-bold text-xl shadow-sm border-2 transition-colors flex items-center gap-3`}
+                  className={`card-bounce ${bgClass} rounded-2xl p-4 text-right font-bold text-xl shadow-sm border-2 transition-colors`}
                 >
                   {getOptionLabel(word)}
                 </motion.button>

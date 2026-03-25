@@ -1,23 +1,28 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { words, getRandomWords, shuffle, WordItem } from "@/data/words";
+import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
 const ROUNDS = 8;
 
-function generateRound() {
-  const correct = getRandomWords(1)[0];
-  const wrong = getRandomWords(3, [correct]);
+function generateRound(usedWords: WordItem[]) {
+  const correct = getRandomWords(1, usedWords)[0];
+  const wrong = getRandomWords(3, [...usedWords, correct]);
   const options = shuffle([correct, ...wrong]);
   return { correct, options };
 }
 
 const WordPictureGame = () => {
+  const usedWordsRef = useRef<WordItem[]>([]);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
-  const [currentRound, setCurrentRound] = useState(generateRound);
+  const [currentRound, setCurrentRound] = useState(() => {
+    const r = generateRound([]);
+    usedWordsRef.current = [r.correct];
+    return r;
+  });
   const [isComplete, setIsComplete] = useState(false);
 
   const handleSelect = useCallback(
@@ -32,8 +37,10 @@ const WordPictureGame = () => {
         if (round + 1 >= ROUNDS) {
           setIsComplete(true);
         } else {
+          const next = generateRound(usedWordsRef.current);
+          usedWordsRef.current = [...usedWordsRef.current, next.correct];
           setRound((r) => r + 1);
-          setCurrentRound(generateRound());
+          setCurrentRound(next);
           setSelected(null);
         }
       }, 1000);
@@ -42,10 +49,13 @@ const WordPictureGame = () => {
   );
 
   const restart = () => {
+    usedWordsRef.current = [];
+    const next = generateRound([]);
+    usedWordsRef.current = [next.correct];
     setRound(0);
     setScore(0);
     setSelected(null);
-    setCurrentRound(generateRound());
+    setCurrentRound(next);
     setIsComplete(false);
   };
 
