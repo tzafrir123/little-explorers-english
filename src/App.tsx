@@ -9,6 +9,7 @@ import WordPicturePage from "./pages/WordPicturePage.tsx";
 import SpellWordPage from "./pages/SpellWordPage.tsx";
 import QuizPage from "./pages/QuizPage.tsx";
 import MemoryPage from "./pages/MemoryPage.tsx";
+import SentencePage from "./pages/SentencePage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/game/spell-word" element={<SpellWordPage />} />
           <Route path="/game/quiz" element={<QuizPage />} />
           <Route path="/game/memory" element={<MemoryPage />} />
+          <Route path="/game/sentence" element={<SentencePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
