@@ -34,6 +34,14 @@ const games = [
     color: "bg-sunshine text-sunshine-foreground",
     path: "/game/memory",
   },
+  {
+    id: "sentence",
+    title: "השלמת מילים במשפט",
+    emoji: "📝",
+    description: "מתקדם",
+    color: "bg-secondary text-secondary-foreground",
+    path: "/game/sentence",
+  },
 ];
 
 const Index = () => {
