@@ -99,7 +99,6 @@ const WordPictureGame = () => {
                   className={`card-bounce ${bgClass} rounded-2xl p-4 text-center font-bold text-lg shadow-md transition-colors border-2 border-border`}
                 >
                   <div className="text-2xl">{word.english}</div>
-                  <div className="text-sm text-muted-foreground mt-1">{word.hebrew}</div>
                 </motion.button>
               );
             })}

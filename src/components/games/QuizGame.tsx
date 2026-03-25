@@ -123,7 +123,6 @@ const QuizGame = () => {
                   onClick={() => handleSelect(word)}
                   className={`card-bounce ${bgClass} rounded-2xl p-4 text-right font-bold text-xl shadow-sm border-2 transition-colors flex items-center gap-3`}
                 >
-                  <span className="text-2xl">{word.emoji}</span>
                   {getOptionLabel(word)}
                 </motion.button>
               );
