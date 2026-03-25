@@ -1,22 +1,27 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getRandomWords, shuffle } from "@/data/words";
+import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
 const ROUNDS = 8;
 
-function generateRound() {
-  const word = getRandomWords(1)[0];
+function generateRound(usedWords: WordItem[]) {
+  const word = getRandomWords(1, usedWords)[0];
   const letters = word.english.toUpperCase().split("");
   const shuffled = shuffle(letters);
   return { word, letters, shuffled };
 }
 
 const SpellWordGame = () => {
+  const usedWordsRef = useRef<WordItem[]>([]);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
-  const [currentRound, setCurrentRound] = useState(generateRound);
+  const [currentRound, setCurrentRound] = useState(() => {
+    const r = generateRound([]);
+    usedWordsRef.current = [r.word];
+    return r;
+  });
   const [placed, setPlaced] = useState<string[]>([]);
   const [available, setAvailable] = useState<{ letter: string; id: number }[]>(() =>
     currentRound.shuffled.map((l, i) => ({ letter: l, id: i }))
@@ -44,7 +49,8 @@ const SpellWordGame = () => {
           if (round + 1 >= ROUNDS) {
             setIsComplete(true);
           } else {
-            const next = generateRound();
+            const next = generateRound(usedWordsRef.current);
+            usedWordsRef.current = [...usedWordsRef.current, next.word];
             setRound((r) => r + 1);
             setCurrentRound(next);
             setPlaced([]);
@@ -65,7 +71,9 @@ const SpellWordGame = () => {
   };
 
   const restart = () => {
-    const next = generateRound();
+    usedWordsRef.current = [];
+    const next = generateRound([]);
+    usedWordsRef.current = [next.word];
     setRound(0);
     setScore(0);
     setCurrentRound(next);
