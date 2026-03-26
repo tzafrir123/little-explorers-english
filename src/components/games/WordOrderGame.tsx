@@ -5,7 +5,7 @@ import { sentenceTemplates } from "@/data/sentences";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 8;
+const ROUNDS = 14;
 
 const WordOrderGame = () => {
   const [level, setLevel] = useState<number | null>(null);
