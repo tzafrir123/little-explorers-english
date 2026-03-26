@@ -42,6 +42,14 @@ const games = [
     color: "bg-secondary text-secondary-foreground",
     path: "/game/sentence",
   },
+  {
+    id: "word-order",
+    title: "כתיבת מילים",
+    emoji: "✍️",
+    description: "סדרו מילים ליצירת משפט נכון",
+    color: "bg-grass text-grass-foreground",
+    path: "/game/word-order",
+  },
 ];
 
 const Index = () => {

@@ -75,11 +75,11 @@ const MemoryGame = () => {
             setIsChecking(false);
           }, 600);
         } else {
-          // No match
+          // No match - keep cards visible longer
           setTimeout(() => {
             setFlipped([]);
             setIsChecking(false);
-          }, 1000);
+          }, 2000);
         }
       }
     },
