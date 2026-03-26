@@ -42,8 +42,15 @@ const SpellWordGame = () => {
 
       if (newPlaced.length === targetWord.length) {
         const isCorrect = newPlaced.join("") === targetWord;
-        setStatus(isCorrect ? "correct" : "wrong");
-        if (isCorrect) setScore((s) => s + 1);
+        if (isCorrect) {
+          setStatus("correct");
+          setScore((s) => s + 1);
+        } else {
+          setStatus("wrong");
+          // Show the correct answer
+          setPlaced(targetWord.split(""));
+          setAvailable([]);
+        }
 
         setTimeout(() => {
           if (round + 1 >= ROUNDS) {

@@ -236,15 +236,8 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
       />
 
       <div className="w-full max-w-lg mt-6">
-        {/* Hebrew hint */}
-        <motion.p
-          key={`hint-${round}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center text-muted-foreground text-sm mb-4"
-        >
-          💡 {template.hebrewHint}
-        </motion.p>
+        {/* Hint button */}
+        <HintButton key={`hint-${round}`} hint={template.hebrewHint} />
 
         {/* Sentence with blanks */}
         <motion.div
