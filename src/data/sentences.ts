@@ -9,7 +9,51 @@ export interface SentenceTemplate {
 
 // Large vocabulary bank - 1000+ unique words used across sentences
 export const sentenceTemplates: SentenceTemplate[] = [
-  // Animals & Nature
+  // 4-word sentences (for WordOrder level 1)
+  { sentence: ["Cats", "like", "warm", "milk"], hebrewHint: "חתולים אוהבים חלב חם" },
+  { sentence: ["Dogs", "love", "big", "bones"], hebrewHint: "כלבים אוהבים עצמות גדולות" },
+  { sentence: ["Birds", "can", "fly", "high"], hebrewHint: "ציפורים יכולות לעוף גבוה" },
+  { sentence: ["Fish", "swim", "very", "fast"], hebrewHint: "דגים שוחים מאוד מהר" },
+  { sentence: ["She", "reads", "good", "books"], hebrewHint: "היא קוראת ספרים טובים" },
+  { sentence: ["He", "plays", "every", "day"], hebrewHint: "הוא משחק כל יום" },
+  { sentence: ["We", "eat", "fresh", "fruit"], hebrewHint: "אנחנו אוכלים פירות טריים" },
+  { sentence: ["They", "run", "very", "fast"], hebrewHint: "הם רצים מאוד מהר" },
+  { sentence: ["I", "drink", "cold", "water"], hebrewHint: "אני שותה מים קרים" },
+  { sentence: ["Mom", "makes", "great", "food"], hebrewHint: "אמא מכינה אוכל מעולה" },
+  { sentence: ["Dad", "drives", "the", "car"], hebrewHint: "אבא נוהג במכונית" },
+  { sentence: ["Stars", "shine", "at", "night"], hebrewHint: "כוכבים זורחים בלילה" },
+  { sentence: ["Rain", "falls", "from", "clouds"], hebrewHint: "גשם יורד מעננים" },
+  { sentence: ["Snow", "is", "very", "cold"], hebrewHint: "שלג מאוד קר" },
+  { sentence: ["The", "sun", "is", "bright"], hebrewHint: "השמש בהירה" },
+  { sentence: ["Flowers", "grow", "in", "spring"], hebrewHint: "פרחים גדלים באביב" },
+  { sentence: ["Babies", "cry", "at", "night"], hebrewHint: "תינוקות בוכים בלילה" },
+  { sentence: ["Frogs", "jump", "very", "high"], hebrewHint: "צפרדעים קופצות מאוד גבוה" },
+  { sentence: ["Bears", "sleep", "in", "winter"], hebrewHint: "דובים ישנים בחורף" },
+  { sentence: ["Kids", "love", "sweet", "candy"], hebrewHint: "ילדים אוהבים ממתקים מתוקים" },
+
+  // 5-word sentences (for WordOrder level 2)
+  { sentence: ["The", "cat", "is", "very", "cute"], hebrewHint: "החתול מאוד חמוד" },
+  { sentence: ["I", "go", "to", "the", "school"], hebrewHint: "אני הולך לבית הספר" },
+  { sentence: ["She", "has", "a", "red", "dress"], hebrewHint: "יש לה שמלה אדומה" },
+  { sentence: ["He", "runs", "in", "the", "park"], hebrewHint: "הוא רץ בפארק" },
+  { sentence: ["We", "play", "in", "the", "garden"], hebrewHint: "אנחנו משחקים בגינה" },
+  { sentence: ["The", "dog", "eats", "his", "food"], hebrewHint: "הכלב אוכל את האוכל שלו" },
+  { sentence: ["My", "mom", "is", "very", "kind"], hebrewHint: "אמא שלי מאוד טובה" },
+  { sentence: ["The", "baby", "is", "very", "small"], hebrewHint: "התינוק מאוד קטן" },
+  { sentence: ["I", "like", "to", "draw", "pictures"], hebrewHint: "אני אוהב לצייר תמונות" },
+  { sentence: ["They", "walk", "to", "the", "store"], hebrewHint: "הם הולכים לחנות" },
+  { sentence: ["The", "sky", "is", "very", "blue"], hebrewHint: "השמיים מאוד כחולים" },
+  { sentence: ["She", "sings", "a", "nice", "song"], hebrewHint: "היא שרה שיר יפה" },
+  { sentence: ["He", "reads", "a", "big", "book"], hebrewHint: "הוא קורא ספר גדול" },
+  { sentence: ["We", "drink", "hot", "tea", "together"], hebrewHint: "אנחנו שותים תה חם ביחד" },
+  { sentence: ["The", "moon", "shines", "at", "night"], hebrewHint: "הירח זורח בלילה" },
+  { sentence: ["Birds", "sing", "in", "the", "morning"], hebrewHint: "ציפורים שרות בבוקר" },
+  { sentence: ["I", "wash", "my", "dirty", "hands"], hebrewHint: "אני שוטף את הידיים המלוכלכות" },
+  { sentence: ["The", "tree", "is", "very", "tall"], hebrewHint: "העץ מאוד גבוה" },
+  { sentence: ["She", "bakes", "a", "chocolate", "cake"], hebrewHint: "היא אופה עוגת שוקולד" },
+  { sentence: ["He", "kicks", "the", "round", "ball"], hebrewHint: "הוא בועט בכדור העגול" },
+
+  // Animals & Nature (6-7 word sentences)
   { sentence: ["The", "cat", "is", "sleeping", "on", "the", "bed"], hebrewHint: "החתול ישן על המיטה" },
   { sentence: ["A", "big", "dog", "runs", "in", "the", "park"], hebrewHint: "כלב גדול רץ בפארק" },
   { sentence: ["The", "bird", "can", "fly", "very", "high"], hebrewHint: "הציפור יכולה לעוף גבוה מאוד" },
