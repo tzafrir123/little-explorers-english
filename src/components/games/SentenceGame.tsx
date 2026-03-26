@@ -74,6 +74,30 @@ function selectBlankIndices(sentence: string[], level: number): number[] {
   return shuffled.slice(0, Math.min(level, sentence.length - 1)).sort((a, b) => a - b);
 }
 
+const HintButton = ({ hint }: { hint: string }) => {
+  const [showHint, setShowHint] = useState(false);
+  return (
+    <div className="text-center mb-4">
+      {showHint ? (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-muted-foreground text-sm"
+        >
+          💡 {hint}
+        </motion.p>
+      ) : (
+        <button
+          onClick={() => setShowHint(true)}
+          className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+        >
+          💡 רמז
+        </button>
+      )}
+    </div>
+  );
+};
+
 interface SentenceGameProps {
   onBack: () => void;
 }
