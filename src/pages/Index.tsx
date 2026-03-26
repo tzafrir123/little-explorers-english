@@ -38,7 +38,8 @@ const games = [
     id: "sentence",
     title: "השלמת מילים במשפט",
     emoji: "📝",
-    description: "מתקדם",
+    description: "השלם מילים חסרות במשפט קיים",
+    badge: "מתקדם",
     color: "bg-secondary text-secondary-foreground",
     path: "/game/sentence",
   },
@@ -47,6 +48,7 @@ const games = [
     title: "כתיבת מילים",
     emoji: "✍️",
     description: "סדרו מילים ליצירת משפט נכון",
+    badge: "מתקדם",
     color: "bg-grass text-grass-foreground",
     path: "/game/word-order",
   },
@@ -91,7 +93,12 @@ const Index = () => {
           >
             <span className="text-5xl">{game.emoji}</span>
             <div className="flex-1">
-              <h2 className="text-xl font-extrabold">{game.title}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-extrabold">{game.title}</h2>
+                {"badge" in game && game.badge && (
+                  <span className="text-[10px] font-bold bg-white/30 px-2 py-0.5 rounded-full">{game.badge}</span>
+                )}
+              </div>
               <p className="text-sm opacity-90 mt-1">{game.description}</p>
             </div>
           </motion.button>
@@ -104,7 +111,7 @@ const Index = () => {
         transition={{ delay: 0.6 }}
         className="mt-12 text-muted-foreground text-sm"
       >
-        ✨ כל משחק כולל 8 סיבובים - בהצלחה
+        ✨ כל משחק כולל 14 סיבובים - בהצלחה
       </motion.p>
     </div>
   );

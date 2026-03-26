@@ -5,7 +5,7 @@ import GameComplete from "../GameComplete";
 import { sentenceTemplates, distractorWords, SentenceTemplate } from "@/data/sentences";
 import { shuffle } from "@/data/words";
 
-const TOTAL_ROUNDS = 8;
+const TOTAL_ROUNDS = 14;
 
 function getRandomItems<T>(arr: T[], count: number, exclude?: T[]): T[] {
   const available = exclude ? arr.filter(item => !exclude.includes(item)) : [...arr];

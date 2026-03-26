@@ -1,10 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const PAIRS = 8;
+const PAIRS = 14;
 
 interface Card {
   id: number;
@@ -34,6 +34,7 @@ const MemoryGame = () => {
   const [matched, setMatched] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [showCloseButton, setShowCloseButton] = useState(false);
 
   const handleFlip = useCallback(
     (id: number) => {
@@ -75,16 +76,19 @@ const MemoryGame = () => {
             setIsChecking(false);
           }, 600);
         } else {
-          // No match - keep cards visible longer
-          setTimeout(() => {
-            setFlipped([]);
-            setIsChecking(false);
-          }, 2000);
+          // No match - show close button
+          setShowCloseButton(true);
         }
       }
     },
     [flipped, cards, isChecking]
   );
+
+  const handleCloseCards = () => {
+    setFlipped([]);
+    setIsChecking(false);
+    setShowCloseButton(false);
+  };
 
   const restart = () => {
     setCards(generateCards());
@@ -92,6 +96,7 @@ const MemoryGame = () => {
     setMatched(0);
     setIsComplete(false);
     setIsChecking(false);
+    setShowCloseButton(false);
   };
 
   if (isComplete) {
@@ -106,7 +111,7 @@ const MemoryGame = () => {
     <div className="min-h-screen flex flex-col items-center pt-8 p-4" dir="rtl">
       <GameHeader title="🧠 משחק זיכרון" score={matched} total={PAIRS} />
 
-      <div className="grid grid-cols-4 gap-3 w-full max-w-lg">
+      <div className="grid grid-cols-4 gap-2 w-full max-w-lg">
         {cards.map((card) => {
           const isFlipped = flipped.includes(card.id);
           const isMatched = card.matched;
@@ -128,12 +133,12 @@ const MemoryGame = () => {
                 <motion.div
                   initial={{ rotateY: 90 }}
                   animate={{ rotateY: 0 }}
-                  className="w-full h-full flex items-center justify-center bg-card rounded-2xl p-2"
+                  className="w-full h-full flex items-center justify-center bg-card rounded-2xl p-1"
                 >
                   {card.type === "emoji" ? (
-                    <span className="text-4xl sm:text-5xl">{card.wordItem.emoji}</span>
+                    <span className="text-3xl sm:text-4xl">{card.wordItem.emoji}</span>
                   ) : (
-                    <span className="text-sm sm:text-lg font-extrabold text-foreground leading-tight text-center">
+                    <span className="text-xs sm:text-sm font-extrabold text-foreground leading-tight text-center">
                       {card.wordItem.english}
                     </span>
                   )}
@@ -142,18 +147,17 @@ const MemoryGame = () => {
                 <div
                   className={`w-full h-full flex items-center justify-center ${cardBackColors[colorIndex]} rounded-2xl`}
                 >
-                  {/* Decorative pattern on card back */}
                   <div className="flex flex-col items-center gap-1">
                     <div className="flex gap-1">
-                      <div className="w-3 h-3 rounded-full bg-white/30" />
-                      <div className="w-3 h-3 rounded-full bg-white/20" />
+                      <div className="w-2 h-2 rounded-full bg-white/30" />
+                      <div className="w-2 h-2 rounded-full bg-white/20" />
                     </div>
-                    <span className="text-white/80 font-extrabold text-xs sm:text-sm">
+                    <span className="text-white/80 font-extrabold text-[10px] sm:text-xs">
                       MEMORY
                     </span>
                     <div className="flex gap-1">
-                      <div className="w-3 h-3 rounded-full bg-white/20" />
-                      <div className="w-3 h-3 rounded-full bg-white/30" />
+                      <div className="w-2 h-2 rounded-full bg-white/20" />
+                      <div className="w-2 h-2 rounded-full bg-white/30" />
                     </div>
                   </div>
                 </div>
@@ -162,6 +166,17 @@ const MemoryGame = () => {
           );
         })}
       </div>
+
+      {showCloseButton && (
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={handleCloseCards}
+          className="mt-4 px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+        >
+          ✕ סגור
+        </motion.button>
+      )}
     </div>
   );
 };

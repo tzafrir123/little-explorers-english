@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 8;
+const ROUNDS = 14;
 
 type QuestionType = "en-to-he" | "he-to-en" | "emoji-to-en";
 

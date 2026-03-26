@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 8;
+const ROUNDS = 14;
 
 function generateRound(usedWords: WordItem[]) {
   const word = getRandomWords(1, usedWords)[0];
@@ -64,7 +64,7 @@ const SpellWordGame = () => {
             setAvailable(next.shuffled.map((l, i) => ({ letter: l, id: i })));
             setStatus("playing");
           }
-        }, 1200);
+        }, isCorrect ? 1200 : 2400);
       }
     },
     [status, placed, available, targetWord, round]

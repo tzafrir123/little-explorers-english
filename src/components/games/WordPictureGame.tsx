@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 8;
+const ROUNDS = 14;
 
 function generateRound(usedWords: WordItem[]) {
   const correct = getRandomWords(1, usedWords)[0];
