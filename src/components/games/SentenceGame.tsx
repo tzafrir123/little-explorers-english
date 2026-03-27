@@ -5,7 +5,7 @@ import GameComplete from "../GameComplete";
 import { sentenceTemplates, distractorWords, SentenceTemplate } from "@/data/sentences";
 import { shuffle } from "@/data/words";
 
-const TOTAL_ROUNDS = 14;
+const TOTAL_ROUNDS = 12;
 
 function getRandomItems<T>(arr: T[], count: number, exclude?: T[]): T[] {
   const available = exclude ? arr.filter(item => !exclude.includes(item)) : [...arr];
@@ -15,7 +15,6 @@ function getRandomItems<T>(arr: T[], count: number, exclude?: T[]): T[] {
 
 function generateDistractorWord(correctWord: string): string {
   const lower = correctWord.toLowerCase();
-  // Try to find a distractor from the same category
   for (const [, words] of Object.entries(distractorWords)) {
     if (words.includes(lower)) {
       const others = words.filter(w => w !== lower);
@@ -24,7 +23,6 @@ function generateDistractorWord(correctWord: string): string {
       }
     }
   }
-  // Fallback: pick from nouns
   const others = distractorWords.nouns.filter(w => w !== lower);
   return others[Math.floor(Math.random() * others.length)];
 }
@@ -43,14 +41,12 @@ function generateOptions(
       const correct = template.sentence[i];
       return generateDistractorWord(correct);
     });
-    // Make sure this option isn't a duplicate
     const wrongKey = wrongAnswer.join("|").toLowerCase();
     const isDuplicate = options.some(o => o.join("|").toLowerCase() === wrongKey);
     if (!isDuplicate) {
       options.push(wrongAnswer);
     }
     if (options.length >= optionCount) break;
-    // Safety: break after many attempts
     if (options.length === attempts) break;
   }
 
@@ -58,7 +54,6 @@ function generateOptions(
 }
 
 function selectBlankIndices(sentence: string[], level: number): number[] {
-  // Skip common articles/prepositions for blanking - prefer content words
   const contentIndices = sentence.reduce<number[]>((acc, word, i) => {
     const lower = word.toLowerCase();
     const skipWords = ["the", "a", "an", "is", "are", "am", "was", "were", "in", "on", "at", "to", "of", "and", "or", "but", "for", "with", "its", "his", "her", "my", "our", "their"];
@@ -68,7 +63,6 @@ function selectBlankIndices(sentence: string[], level: number): number[] {
     return acc;
   }, []);
 
-  // If not enough content words, also use function words
   const available = contentIndices.length >= level ? contentIndices : sentence.map((_, i) => i);
   const shuffled = shuffle(available);
   return shuffled.slice(0, Math.min(level, sentence.length - 1)).sort((a, b) => a - b);
@@ -160,16 +154,16 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
     const correct = selectedOption.every((w, i) => w.toLowerCase() === currentPuzzle.correctAnswer[i].toLowerCase());
     setIsCorrect(correct);
     if (correct) setScore(s => s + 1);
+  };
 
-    setTimeout(() => {
-      if (round + 1 >= TOTAL_ROUNDS) {
-        setGameComplete(true);
-      } else {
-        setRound(r => r + 1);
-        setSelected(null);
-        setShowResult(false);
-      }
-    }, 1500);
+  const handleNext = () => {
+    if (round + 1 >= TOTAL_ROUNDS) {
+      setGameComplete(true);
+    } else {
+      setRound(r => r + 1);
+      setSelected(null);
+      setShowResult(false);
+    }
   };
 
   const handleRestart = () => {
@@ -275,7 +269,6 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
             {template.sentence.map((word, i) => {
               const isBlank = blankIndices.includes(i);
               if (isBlank) {
-                // Show the correct answer if result is shown
                 if (showResult && isCorrect) {
                   return (
                     <motion.span
@@ -361,18 +354,26 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
           </AnimatePresence>
         </div>
 
-        {/* Result feedback */}
+        {/* Result feedback + Next button */}
         <AnimatePresence>
           {showResult && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center mt-4"
+              className="text-center mt-4 flex flex-col items-center gap-3"
             >
               <span className="text-4xl">
                 {isCorrect ? "🎉" : "😕"}
               </span>
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={handleNext}
+                className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+              >
+                הבא ←
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>

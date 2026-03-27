@@ -72,7 +72,7 @@ const Index = () => {
           📚
         </motion.div>
         <h1 className="text-4xl font-extrabold text-foreground mb-2">
-          !בואו נלמד אנגלית
+          בואו נלמד אנגלית!
         </h1>
         <p className="text-lg text-muted-foreground font-medium">
           בחרו משחק והתחילו ללמוד 🎮
@@ -111,7 +111,7 @@ const Index = () => {
         transition={{ delay: 0.6 }}
         className="mt-12 text-muted-foreground text-sm"
       >
-        ✨ כל משחק כולל 14 סיבובים - בהצלחה
+        ✨ כל משחק כולל 12 סיבובים - בהצלחה
       </motion.p>
     </div>
   );

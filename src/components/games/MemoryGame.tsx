@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const PAIRS = 14;
+const PAIRS = 12;
 
 interface Card {
   id: number;
@@ -111,6 +111,17 @@ const MemoryGame = () => {
     <div className="min-h-screen flex flex-col items-center pt-8 p-4" dir="rtl">
       <GameHeader title="🧠 משחק זיכרון" score={matched} total={PAIRS} />
 
+      {showCloseButton && (
+        <motion.button
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={handleCloseCards}
+          className="mb-3 px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+        >
+          ✕ סגור
+        </motion.button>
+      )}
+
       <div className="grid grid-cols-4 gap-2 w-full max-w-lg">
         {cards.map((card) => {
           const isFlipped = flipped.includes(card.id);
@@ -166,17 +177,6 @@ const MemoryGame = () => {
           );
         })}
       </div>
-
-      {showCloseButton && (
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={handleCloseCards}
-          className="mt-4 px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
-        >
-          ✕ סגור
-        </motion.button>
-      )}
     </div>
   );
 };

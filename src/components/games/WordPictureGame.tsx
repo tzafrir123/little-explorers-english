@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 14;
+const ROUNDS = 12;
 
 function generateRound(usedWords: WordItem[]) {
   const correct = getRandomWords(1, usedWords)[0];
@@ -24,6 +24,7 @@ const WordPictureGame = () => {
     return r;
   });
   const [isComplete, setIsComplete] = useState(false);
+  const [showNext, setShowNext] = useState(false);
 
   const handleSelect = useCallback(
     (word: WordItem) => {
@@ -32,21 +33,23 @@ const WordPictureGame = () => {
 
       const isCorrect = word.english === currentRound.correct.english;
       if (isCorrect) setScore((s) => s + 1);
-
-      setTimeout(() => {
-        if (round + 1 >= ROUNDS) {
-          setIsComplete(true);
-        } else {
-          const next = generateRound(usedWordsRef.current);
-          usedWordsRef.current = [...usedWordsRef.current, next.correct];
-          setRound((r) => r + 1);
-          setCurrentRound(next);
-          setSelected(null);
-        }
-      }, 1000);
+      setShowNext(true);
     },
-    [selected, currentRound, round]
+    [selected, currentRound]
   );
+
+  const handleNext = () => {
+    if (round + 1 >= ROUNDS) {
+      setIsComplete(true);
+    } else {
+      const next = generateRound(usedWordsRef.current);
+      usedWordsRef.current = [...usedWordsRef.current, next.correct];
+      setRound((r) => r + 1);
+      setCurrentRound(next);
+      setSelected(null);
+      setShowNext(false);
+    }
+  };
 
   const restart = () => {
     usedWordsRef.current = [];
@@ -57,6 +60,7 @@ const WordPictureGame = () => {
     setSelected(null);
     setCurrentRound(next);
     setIsComplete(false);
+    setShowNext(false);
   };
 
   if (isComplete) {
@@ -113,6 +117,17 @@ const WordPictureGame = () => {
               );
             })}
           </div>
+
+          {showNext && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={handleNext}
+              className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+            >
+              הבא ←
+            </motion.button>
+          )}
         </motion.div>
       </AnimatePresence>
     </div>
