@@ -5,7 +5,31 @@ import { sentenceTemplates } from "@/data/sentences";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 14;
+const ROUNDS = 12;
+
+const HintButton = ({ hint }: { hint: string }) => {
+  const [showHint, setShowHint] = useState(false);
+  return (
+    <div className="text-center mb-4">
+      {showHint ? (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-muted-foreground text-sm"
+        >
+          💡 {hint}
+        </motion.p>
+      ) : (
+        <button
+          onClick={() => setShowHint(true)}
+          className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+        >
+          💡 רמז
+        </button>
+      )}
+    </div>
+  );
+};
 
 const WordOrderGame = () => {
   const [level, setLevel] = useState<number | null>(null);
@@ -15,9 +39,10 @@ const WordOrderGame = () => {
   const [available, setAvailable] = useState<{ word: string; id: number }[]>([]);
   const [status, setStatus] = useState<"playing" | "correct" | "wrong">("playing");
   const [isComplete, setIsComplete] = useState(false);
+  const [showNext, setShowNext] = useState(false);
   const usedRef = useRef<Set<number>>(new Set());
 
-  const wordCount = level ? level + 3 : 4; // level 1=4 words, level 2=5, etc.
+  const wordCount = level ? level + 3 : 4;
 
   const currentSentence = useMemo(() => {
     if (level === null) return null;
@@ -42,15 +67,6 @@ const WordOrderGame = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [level, round]);
 
-  const initRound = useCallback(() => {
-    if (!currentSentence) return;
-    const words = currentSentence.sentence;
-    const shuffled = shuffle(words.map((w, i) => ({ word: w, id: i })));
-    setPlaced([]);
-    setAvailable(shuffled);
-    setStatus("playing");
-  }, [currentSentence]);
-
   // Initialize available words when sentence changes
   useMemo(() => {
     if (currentSentence) {
@@ -59,6 +75,7 @@ const WordOrderGame = () => {
       setPlaced([]);
       setAvailable(shuffled);
       setStatus("playing");
+      setShowNext(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSentence]);
@@ -79,22 +96,22 @@ const WordOrderGame = () => {
           setScore((s) => s + 1);
         } else {
           setStatus("wrong");
-          // Show correct order
           setPlaced(currentSentence.sentence);
           setAvailable([]);
         }
-
-        setTimeout(() => {
-          if (round + 1 >= ROUNDS) {
-            setIsComplete(true);
-          } else {
-            setRound((r) => r + 1);
-          }
-        }, 1500);
+        setShowNext(true);
       }
     },
-    [status, placed, available, currentSentence, round]
+    [status, placed, available, currentSentence]
   );
+
+  const handleNext = () => {
+    if (round + 1 >= ROUNDS) {
+      setIsComplete(true);
+    } else {
+      setRound((r) => r + 1);
+    }
+  };
 
   const handleUndo = () => {
     if (placed.length === 0 || status !== "playing") return;
@@ -109,6 +126,7 @@ const WordOrderGame = () => {
     setRound(0);
     setScore(0);
     setIsComplete(false);
+    setShowNext(false);
   };
 
   const restart = () => {
@@ -117,6 +135,7 @@ const WordOrderGame = () => {
     setRound(0);
     setScore(0);
     setIsComplete(false);
+    setShowNext(false);
   };
 
   // Level selection
@@ -195,10 +214,8 @@ const WordOrderGame = () => {
           exit={{ y: -50, opacity: 0 }}
           className="flex flex-col items-center gap-6 w-full max-w-lg mt-6"
         >
-          {/* Hebrew hint */}
-          <p className="text-muted-foreground text-sm text-center">
-            💡 {currentSentence.hebrewHint}
-          </p>
+          {/* Hebrew hint button */}
+          <HintButton key={`hint-${round}`} hint={currentSentence.hebrewHint} />
 
           {/* Placed words (slots) */}
           <div className="flex gap-2 min-h-[56px] justify-center flex-wrap" dir="ltr">
@@ -242,6 +259,17 @@ const WordOrderGame = () => {
             >
               ↩ בטל
             </button>
+          )}
+
+          {showNext && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={handleNext}
+              className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+            >
+              הבא ←
+            </motion.button>
           )}
         </motion.div>
       </AnimatePresence>

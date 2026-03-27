@@ -4,7 +4,7 @@ import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
-const ROUNDS = 14;
+const ROUNDS = 12;
 
 function generateRound(usedWords: WordItem[]) {
   const word = getRandomWords(1, usedWords)[0];
@@ -28,6 +28,7 @@ const SpellWordGame = () => {
   );
   const [status, setStatus] = useState<"playing" | "correct" | "wrong">("playing");
   const [isComplete, setIsComplete] = useState(false);
+  const [showNext, setShowNext] = useState(false);
 
   const targetWord = currentRound.word.english.toUpperCase();
 
@@ -51,24 +52,26 @@ const SpellWordGame = () => {
           setPlaced(targetWord.split(""));
           setAvailable([]);
         }
-
-        setTimeout(() => {
-          if (round + 1 >= ROUNDS) {
-            setIsComplete(true);
-          } else {
-            const next = generateRound(usedWordsRef.current);
-            usedWordsRef.current = [...usedWordsRef.current, next.word];
-            setRound((r) => r + 1);
-            setCurrentRound(next);
-            setPlaced([]);
-            setAvailable(next.shuffled.map((l, i) => ({ letter: l, id: i })));
-            setStatus("playing");
-          }
-        }, isCorrect ? 1200 : 2400);
+        setShowNext(true);
       }
     },
-    [status, placed, available, targetWord, round]
+    [status, placed, available, targetWord]
   );
+
+  const handleNext = () => {
+    if (round + 1 >= ROUNDS) {
+      setIsComplete(true);
+    } else {
+      const next = generateRound(usedWordsRef.current);
+      usedWordsRef.current = [...usedWordsRef.current, next.word];
+      setRound((r) => r + 1);
+      setCurrentRound(next);
+      setPlaced([]);
+      setAvailable(next.shuffled.map((l, i) => ({ letter: l, id: i })));
+      setStatus("playing");
+      setShowNext(false);
+    }
+  };
 
   const handleUndo = () => {
     if (placed.length === 0 || status !== "playing") return;
@@ -88,6 +91,7 @@ const SpellWordGame = () => {
     setAvailable(next.shuffled.map((l, i) => ({ letter: l, id: i })));
     setStatus("playing");
     setIsComplete(false);
+    setShowNext(false);
   };
 
   if (isComplete) {
@@ -155,6 +159,17 @@ const SpellWordGame = () => {
             >
               ↩ בטל
             </button>
+          )}
+
+          {showNext && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={handleNext}
+              className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-lg"
+            >
+              הבא ←
+            </motion.button>
           )}
         </motion.div>
       </AnimatePresence>
