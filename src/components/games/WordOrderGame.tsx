@@ -36,6 +36,7 @@ const WordOrderGame = () => {
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [placed, setPlaced] = useState<string[]>([]);
+  const [wrongPlaced, setWrongPlaced] = useState<string[]>([]);
   const [available, setAvailable] = useState<{ word: string; id: number }[]>([]);
   const [status, setStatus] = useState<"playing" | "correct" | "wrong">("playing");
   const [isComplete, setIsComplete] = useState(false);
