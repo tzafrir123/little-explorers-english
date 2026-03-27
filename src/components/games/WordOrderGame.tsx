@@ -74,6 +74,7 @@ const WordOrderGame = () => {
       const words = currentSentence.sentence;
       const shuffled = shuffle(words.map((w, i) => ({ word: w, id: i })));
       setPlaced([]);
+      setWrongPlaced([]);
       setAvailable(shuffled);
       setStatus("playing");
       setShowNext(false);
@@ -97,7 +98,7 @@ const WordOrderGame = () => {
           setScore((s) => s + 1);
         } else {
           setStatus("wrong");
-          setPlaced(currentSentence.sentence);
+          setWrongPlaced([...newPlaced]);
           setAvailable([]);
         }
         setShowNext(true);
@@ -218,25 +219,49 @@ const WordOrderGame = () => {
           {/* Hebrew hint button */}
           <HintButton key={`hint-${round}`} hint={currentSentence.hebrewHint} />
 
-          {/* Placed words (slots) */}
+          {/* Placed words (slots) - show wrong answer when wrong */}
           <div className="flex gap-2 min-h-[56px] justify-center flex-wrap" dir="ltr">
-            {currentSentence.sentence.map((_, i) => (
-              <motion.div
-                key={i}
-                className={`min-w-[64px] px-3 h-12 rounded-xl border-2 flex items-center justify-center text-base font-bold
-                  ${placed[i]
-                    ? status === "correct"
-                      ? "bg-grass text-grass-foreground border-grass"
-                      : status === "wrong"
-                      ? "bg-destructive text-destructive-foreground border-destructive"
-                      : "bg-sky/20 border-sky text-foreground"
-                    : "border-border bg-card"
-                  }`}
-              >
-                {placed[i] || ""}
-              </motion.div>
-            ))}
+            {currentSentence.sentence.map((_, i) => {
+              const word = status === "wrong" ? wrongPlaced[i] : placed[i];
+              return (
+                <motion.div
+                  key={i}
+                  className={`min-w-[64px] px-3 h-12 rounded-xl border-2 flex items-center justify-center text-base font-bold
+                    ${word
+                      ? status === "correct"
+                        ? "bg-grass text-grass-foreground border-grass"
+                        : status === "wrong"
+                        ? "bg-destructive text-destructive-foreground border-destructive"
+                        : "bg-sky/20 border-sky text-foreground"
+                      : "border-border bg-card"
+                    }`}
+                >
+                  {word || ""}
+                </motion.div>
+              );
+            })}
           </div>
+
+          {/* Correct answer shown below when wrong */}
+          {status === "wrong" && currentSentence && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center gap-1"
+            >
+              <p className="text-sm font-semibold text-muted-foreground">✅ התשובה הנכונה:</p>
+              <div className="flex gap-2 justify-center flex-wrap" dir="ltr">
+                {currentSentence.sentence.map((w, i) => (
+                  <div
+                    key={i}
+                    className="min-w-[64px] px-3 h-12 rounded-xl border-2 bg-grass text-grass-foreground border-grass flex items-center justify-center text-base font-bold"
+                  >
+                    {w}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* Available words */}
           <div className="flex gap-2 flex-wrap justify-center" dir="ltr">
