@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getRandomWords, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
-import { Mic, MicOff, Volume2 } from "lucide-react";
+import { Mic, MicOff, Volume2, X } from "lucide-react";
 
 const ROUNDS = 12;
 const MAX_ATTEMPTS = 3;
