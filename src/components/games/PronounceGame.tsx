@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getRandomWords, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
-import { Mic, MicOff, Volume2 } from "lucide-react";
+import { Mic, MicOff, Volume2, X } from "lucide-react";
 
 const ROUNDS = 12;
 const MAX_ATTEMPTS = 3;
@@ -41,27 +41,43 @@ const PronounceGame = () => {
     speechSynthesis.speak(utterance);
   }, [currentWord]);
 
+  const [showWrongX, setShowWrongX] = useState(false);
+
+  const speakText = useCallback((text: string, lang = "en-US") => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.8;
+    speechSynthesis.speak(utterance);
+  }, []);
+
   const handleResult = useCallback(
     (transcript: string) => {
       const spoken = transcript.toLowerCase().trim();
       setLastResult(spoken);
+
+      // Speak back what was heard
+      speakText(spoken);
 
       if (spoken === targetWord || spoken.includes(targetWord)) {
         setStatus("correct");
         setScore((s) => s + 1);
         setShowNext(true);
       } else {
+        // Show red X
+        setShowWrongX(true);
+        setTimeout(() => setShowWrongX(false), 1200);
+
         const newAttempts = attemptsLeft - 1;
         setAttemptsLeft(newAttempts);
         if (newAttempts <= 0) {
           setStatus("failed");
           setShowNext(true);
-          // Speak the correct word
-          setTimeout(() => speakWord(), 500);
+          // Speak the correct word after a delay
+          setTimeout(() => speakText(currentWord.english), 1500);
         }
       }
     },
-    [targetWord, attemptsLeft, speakWord]
+    [targetWord, attemptsLeft, speakText, currentWord.english]
   );
 
   const toggleRecording = useCallback(() => {
@@ -124,6 +140,7 @@ const PronounceGame = () => {
       setStatus("playing");
       setLastResult("");
       setShowNext(false);
+      setShowWrongX(false);
     }
   };
 
@@ -140,6 +157,7 @@ const PronounceGame = () => {
     setLastResult("");
     setIsComplete(false);
     setShowNext(false);
+    setShowWrongX(false);
   };
 
   if (isComplete) {
@@ -204,10 +222,24 @@ const PronounceGame = () => {
             {isRecording ? "מקליט... לחצו שוב לעצירה" : "לחצו להקלטה"}
           </p>
 
-          {/* Attempts left */}
-          {status === "playing" && attemptsLeft < MAX_ATTEMPTS && (
-            <p className="text-sm font-bold text-destructive">
-              נסיונות נותרו: {attemptsLeft}
+          {/* Red X on wrong */}
+          <AnimatePresence>
+            {showWrongX && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                className="flex items-center justify-center"
+              >
+                <X className="w-16 h-16 text-destructive" strokeWidth={3} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Attempts counter */}
+          {status === "playing" && (
+            <p className="text-sm font-bold text-muted-foreground">
+              ניסיון {MAX_ATTEMPTS - attemptsLeft + 1} מתוך {MAX_ATTEMPTS}
             </p>
           )}
 
