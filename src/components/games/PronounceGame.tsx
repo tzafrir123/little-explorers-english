@@ -157,6 +157,7 @@ const PronounceGame = () => {
     setLastResult("");
     setIsComplete(false);
     setShowNext(false);
+    setShowWrongX(false);
   };
 
   if (isComplete) {
