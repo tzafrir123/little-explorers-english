@@ -41,27 +41,43 @@ const PronounceGame = () => {
     speechSynthesis.speak(utterance);
   }, [currentWord]);
 
+  const [showWrongX, setShowWrongX] = useState(false);
+
+  const speakText = useCallback((text: string, lang = "en-US") => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.8;
+    speechSynthesis.speak(utterance);
+  }, []);
+
   const handleResult = useCallback(
     (transcript: string) => {
       const spoken = transcript.toLowerCase().trim();
       setLastResult(spoken);
+
+      // Speak back what was heard
+      speakText(spoken);
 
       if (spoken === targetWord || spoken.includes(targetWord)) {
         setStatus("correct");
         setScore((s) => s + 1);
         setShowNext(true);
       } else {
+        // Show red X
+        setShowWrongX(true);
+        setTimeout(() => setShowWrongX(false), 1200);
+
         const newAttempts = attemptsLeft - 1;
         setAttemptsLeft(newAttempts);
         if (newAttempts <= 0) {
           setStatus("failed");
           setShowNext(true);
-          // Speak the correct word
-          setTimeout(() => speakWord(), 500);
+          // Speak the correct word after a delay
+          setTimeout(() => speakText(currentWord.english), 1500);
         }
       }
     },
-    [targetWord, attemptsLeft, speakWord]
+    [targetWord, attemptsLeft, speakText, currentWord.english]
   );
 
   const toggleRecording = useCallback(() => {
