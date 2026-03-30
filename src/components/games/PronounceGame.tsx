@@ -222,10 +222,24 @@ const PronounceGame = () => {
             {isRecording ? "מקליט... לחצו שוב לעצירה" : "לחצו להקלטה"}
           </p>
 
-          {/* Attempts left */}
-          {status === "playing" && attemptsLeft < MAX_ATTEMPTS && (
-            <p className="text-sm font-bold text-destructive">
-              נסיונות נותרו: {attemptsLeft}
+          {/* Red X on wrong */}
+          <AnimatePresence>
+            {showWrongX && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                className="flex items-center justify-center"
+              >
+                <X className="w-16 h-16 text-destructive" strokeWidth={3} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Attempts counter */}
+          {status === "playing" && (
+            <p className="text-sm font-bold text-muted-foreground">
+              ניסיון {MAX_ATTEMPTS - attemptsLeft + 1} מתוך {MAX_ATTEMPTS}
             </p>
           )}
 
