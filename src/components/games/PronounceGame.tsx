@@ -140,6 +140,7 @@ const PronounceGame = () => {
       setStatus("playing");
       setLastResult("");
       setShowNext(false);
+      setShowWrongX(false);
     }
   };
 
