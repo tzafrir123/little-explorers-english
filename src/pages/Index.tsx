@@ -35,6 +35,14 @@ const games = [
     path: "/game/memory",
   },
   {
+    id: "pronounce",
+    title: "בטא את המילה",
+    emoji: "🗣️",
+    description: "בטאו את המילה בצורה הנכונה",
+    color: "bg-sky text-sky-foreground",
+    path: "/game/pronounce",
+  },
+  {
     id: "sentence",
     title: "השלמת מילים במשפט",
     emoji: "📝",
