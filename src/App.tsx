@@ -29,6 +29,7 @@ const App = () => (
           <Route path="/game/memory" element={<MemoryPage />} />
           <Route path="/game/sentence" element={<SentencePage />} />
           <Route path="/game/word-order" element={<WordOrderPage />} />
+          <Route path="/game/pronounce" element={<PronouncePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
