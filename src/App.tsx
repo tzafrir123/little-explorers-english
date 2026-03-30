@@ -11,6 +11,7 @@ import QuizPage from "./pages/QuizPage.tsx";
 import MemoryPage from "./pages/MemoryPage.tsx";
 import SentencePage from "./pages/SentencePage.tsx";
 import WordOrderPage from "./pages/WordOrderPage.tsx";
+import PronouncePage from "./pages/PronouncePage.tsx";
 
 const queryClient = new QueryClient();
 
