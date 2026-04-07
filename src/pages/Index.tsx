@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogOut, Star } from "lucide-react";
+import Leaderboard from "@/components/Leaderboard";
 
 const games = [
   {
@@ -64,63 +67,95 @@ const games = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const { profile, signOut } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-12 p-4" dir="rtl">
-      <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="text-center mb-10"
-      >
-        <motion.div
-          animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ repeat: Infinity, duration: 3 }}
-          className="text-7xl mb-4"
-        >
-          📚
-        </motion.div>
-        <h1 className="text-4xl font-extrabold text-foreground mb-2">
-          בואו נלמד אנגלית!
-        </h1>
-        <p className="text-lg text-muted-foreground font-medium">
-          בחרו משחק והתחילו ללמוד 🎮
-        </p>
-      </motion.div>
-
-      <div className="grid gap-4 w-full max-w-md">
-        {games.map((game, i) => (
-          <motion.button
-            key={game.id}
-            initial={{ x: 80, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: i * 0.12, type: "spring", stiffness: 200 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => navigate(game.path)}
-            className={`${game.color} rounded-3xl p-6 text-right shadow-lg game-shadow flex items-center gap-4 transition-shadow`}
-          >
-            <span className="text-5xl">{game.emoji}</span>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-extrabold">{game.title}</h2>
-                {"badge" in game && game.badge && (
-                  <span className="text-[10px] font-bold bg-white/30 px-2 py-0.5 rounded-full">{game.badge}</span>
-                )}
-              </div>
-              <p className="text-sm opacity-90 mt-1">{game.description}</p>
+    <div className="min-h-screen flex pt-12 p-4" dir="rtl">
+      {/* Main content - centered */}
+      <div className="flex-1 flex flex-col items-center">
+        {/* User info bar */}
+        <div className="w-full max-w-md flex items-center justify-between mb-6 px-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-foreground">👋 שלום, {profile?.username}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            {/* Score display */}
+            <div className="flex items-center gap-1 bg-sunshine/20 text-sunshine-foreground px-3 py-1.5 rounded-full font-bold text-sm">
+              <Star className="w-4 h-4 text-sunshine fill-sunshine" />
+              {profile?.score || 0} נקודות
             </div>
-          </motion.button>
-        ))}
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              יציאה
+            </button>
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-center mb-10"
+        >
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 3 }}
+            className="text-7xl mb-4"
+          >
+            📚
+          </motion.div>
+          <h1 className="text-4xl font-extrabold text-foreground mb-2">
+            בואו נלמד אנגלית!
+          </h1>
+          <p className="text-lg text-muted-foreground font-medium">
+            בחרו משחק והתחילו ללמוד 🎮
+          </p>
+        </motion.div>
+
+        <div className="grid gap-4 w-full max-w-md">
+          {games.map((game, i) => (
+            <motion.button
+              key={game.id}
+              initial={{ x: 80, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: i * 0.12, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate(game.path)}
+              className={`${game.color} rounded-3xl p-6 text-right shadow-lg game-shadow flex items-center gap-4 transition-shadow`}
+            >
+              <span className="text-5xl">{game.emoji}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-extrabold">{game.title}</h2>
+                  {"badge" in game && game.badge && (
+                    <span className="text-[10px] font-bold bg-white/30 px-2 py-0.5 rounded-full">{game.badge}</span>
+                  )}
+                </div>
+                <p className="text-sm opacity-90 mt-1">{game.description}</p>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-12 text-muted-foreground text-sm"
+        >
+          ✨ כל משחק כולל 12 סיבובים - בהצלחה
+        </motion.p>
       </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="mt-12 text-muted-foreground text-sm"
-      >
-        ✨ כל משחק כולל 12 סיבובים - בהצלחה
-      </motion.p>
+      {/* Leaderboard - right side on desktop */}
+      <div className="hidden lg:block mr-4">
+        <div className="sticky top-12">
+          <Leaderboard />
+        </div>
+      </div>
     </div>
   );
 };

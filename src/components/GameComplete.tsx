@@ -1,6 +1,13 @@
+// ============================================
+// GameComplete - Shows results after finishing a game
+// Score Save: Saves score to DB when game is completed
+// ============================================
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Star, RotateCcw, Home } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useRef } from "react";
 
 interface GameCompleteProps {
   score: number;
@@ -10,7 +17,17 @@ interface GameCompleteProps {
 
 const GameComplete = ({ score, total, onRestart }: GameCompleteProps) => {
   const navigate = useNavigate();
+  const { addScore, user } = useAuth();
+  const scoreSavedRef = useRef(false);
   const percentage = Math.round((score / total) * 100);
+
+  // Score Save: Save score to DB only once when game completes
+  useEffect(() => {
+    if (!scoreSavedRef.current && user && score > 0) {
+      scoreSavedRef.current = true;
+      addScore(score);
+    }
+  }, [score, user, addScore]);
 
   const getMessage = () => {
     if (percentage === 100) return "!מושלם! כל הכבוד 🎉";
@@ -44,7 +61,10 @@ const GameComplete = ({ score, total, onRestart }: GameCompleteProps) => {
 
       <div className="flex gap-3 mt-2">
         <button
-          onClick={onRestart}
+          onClick={() => {
+            scoreSavedRef.current = false;
+            onRestart();
+          }}
           className="card-bounce flex items-center gap-2 bg-secondary text-secondary-foreground px-6 py-3 rounded-2xl font-bold text-lg game-shadow"
         >
           <RotateCcw className="w-5 h-5" />
