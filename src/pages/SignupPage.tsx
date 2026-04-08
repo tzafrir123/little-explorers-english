@@ -92,7 +92,7 @@ const SignupPage = () => {
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">לפחות 4 תווים (אפשר גם מספרים)</p>
+            <p className="text-xs text-muted-foreground mt-1">לפחות 6 תווים (אפשר גם מספרים)</p>
           </div>
 
           {/* Error message */}
