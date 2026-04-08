@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUp = async (username: string, password: string): Promise<{ error: string | null }> => {
     const trimmed = username.trim();
     if (trimmed.length < 2) return { error: "שם המשתמש צריך להיות לפחות 2 תווים" };
-    if (password.length < 4) return { error: "הסיסמה צריכה להיות לפחות 4 תווים" };
+    if (password.length < 6) return { error: "הסיסמה צריכה להיות לפחות 6 תווים" };
 
     // Check if username already exists
     const { data: existing } = await supabase
