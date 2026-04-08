@@ -157,12 +157,6 @@ const Index = () => {
         </motion.p>
       </div>
 
-      {/* Leaderboard - right side on desktop */}
-      <div className="hidden lg:block mr-4">
-        <div className="sticky top-12">
-          <Leaderboard />
-        </div>
-      </div>
     </div>
   );
 };

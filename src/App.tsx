@@ -60,6 +60,7 @@ const AppRoutes = () => (
     <Route path="/game/sentence" element={<ProtectedRoute><SentencePage /></ProtectedRoute>} />
     <Route path="/game/word-order" element={<ProtectedRoute><WordOrderPage /></ProtectedRoute>} />
     <Route path="/game/pronounce" element={<ProtectedRoute><PronouncePage /></ProtectedRoute>} />
+    <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
