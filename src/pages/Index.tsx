@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut, Star } from "lucide-react";
-import Leaderboard from "@/components/Leaderboard";
+import { LogOut, Star, Trophy } from "lucide-react";
 
 const games = [
   {
