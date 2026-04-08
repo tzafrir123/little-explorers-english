@@ -106,6 +106,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error.message.includes("already registered")) {
         return { error: "השם הזה כבר תפוס, נסו שם אחר 😊" };
       }
+      if (error.message.includes("weak_password") || error.message.includes("Password")) {
+        return { error: "הסיסמה קצרה או פשוטה מדי, נסו סיסמה אחרת 🔑" };
+      }
       return { error: "משהו השתבש, נסו שוב 🤔" };
     }
     return { error: null };
