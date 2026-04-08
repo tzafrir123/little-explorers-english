@@ -1,1 +1,6 @@
 project_id = "nnqymcmhhenjniyarkfo"
+
+[auth]
+[auth.password]
+min_length = 6
+hibp_enabled = false
