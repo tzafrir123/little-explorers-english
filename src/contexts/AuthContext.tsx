@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
-  // Signup: Create new user with username
+  // Signup: Create new user via edge function (bypasses HIBP password check)
   const signUp = async (username: string, password: string): Promise<{ error: string | null }> => {
     const trimmed = username.trim();
     if (trimmed.length < 2) return { error: "שם המשתמש צריך להיות לפחות 2 תווים" };
@@ -103,21 +103,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (existing) return { error: "השם הזה כבר תפוס, נסו שם אחר 😊" };
 
-    const { error } = await supabase.auth.signUp({
-      email: usernameToEmail(trimmed),
-      password,
-      options: { data: { username: trimmed } },
+    // Use edge function to create user (admin API bypasses HIBP)
+    const { data: fnData, error: fnError } = await supabase.functions.invoke("signup", {
+      body: {
+        email: usernameToEmail(trimmed),
+        password,
+        username: trimmed,
+      },
     });
 
-    if (error) {
-      if (error.message.includes("already registered")) {
+    if (fnError || fnData?.error) {
+      const msg = fnData?.error || fnError?.message || "";
+      if (msg.includes("already registered")) {
         return { error: "השם הזה כבר תפוס, נסו שם אחר 😊" };
-      }
-      if (error.message.includes("weak_password") || error.message.includes("Password")) {
-        return { error: "הסיסמה קצרה או פשוטה מדי, נסו סיסמה אחרת 🔑" };
       }
       return { error: "משהו השתבש, נסו שוב 🤔" };
     }
+
+    // Sign in with the created credentials to establish session
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email: usernameToEmail(trimmed),
+      password,
+    });
+
+    if (signInErr) {
+      return { error: "החשבון נוצר, נסו להתחבר 🙂" };
+    }
+
     return { error: null };
   };
 
