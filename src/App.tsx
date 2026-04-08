@@ -15,6 +15,7 @@ import MemoryPage from "./pages/MemoryPage.tsx";
 import SentencePage from "./pages/SentencePage.tsx";
 import WordOrderPage from "./pages/WordOrderPage.tsx";
 import PronouncePage from "./pages/PronouncePage.tsx";
+import LeaderboardPage from "./pages/LeaderboardPage.tsx";
 import type { ReactNode } from "react";
 
 const queryClient = new QueryClient();
