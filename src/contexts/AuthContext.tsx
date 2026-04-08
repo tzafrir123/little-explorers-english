@@ -33,7 +33,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Login: Converts username to fake email for Supabase Auth
-const usernameToEmail = (username: string) => `${username.toLowerCase().trim()}@kids-game.local`;
+// Login: Converts username to a valid ASCII email for Supabase Auth
+// Hebrew/special chars are encoded to base64 to ensure valid email format
+const usernameToEmail = (username: string) => {
+  const normalized = username.toLowerCase().trim();
+  // Encode to base64 to handle Hebrew, spaces, and special characters
+  const encoded = btoa(unescape(encodeURIComponent(normalized)));
+  return `${encoded}@kids-game.local`;
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
