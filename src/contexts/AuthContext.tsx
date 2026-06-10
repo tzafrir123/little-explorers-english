@@ -16,6 +16,7 @@ interface Profile {
   total_login_num: number;
   last_login_at: string | null;
   created_at: string;
+  language: "en" | "ro";
 }
 
 interface AuthContextType {
@@ -23,7 +24,11 @@ interface AuthContextType {
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
-  signUp: (username: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (
+    username: string,
+    password: string,
+    language?: "en" | "ro"
+  ) => Promise<{ error: string | null }>;
   signIn: (username: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -89,7 +94,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [fetchProfile]);
 
   // Signup: Create new user via edge function (bypasses HIBP password check)
-  const signUp = async (username: string, password: string): Promise<{ error: string | null }> => {
+  const signUp = async (
+    username: string,
+    password: string,
+    language: "en" | "ro" = "en"
+  ): Promise<{ error: string | null }> => {
     const trimmed = username.trim();
     if (trimmed.length < 2) return { error: "שם המשתמש צריך להיות לפחות 2 תווים" };
     if (password.length < 6) return { error: "הסיסמה צריכה להיות לפחות 6 תווים" };
@@ -109,6 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: usernameToEmail(trimmed),
         password,
         username: trimmed,
+        language,
       },
     });
 

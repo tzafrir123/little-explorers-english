@@ -12,7 +12,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { email, password, username } = await req.json();
+    const { email, password, username, language } = await req.json();
+    const lang = language === "ro" ? "ro" : "en";
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -24,7 +25,7 @@ Deno.serve(async (req) => {
       email,
       password,
       email_confirm: true,
-      user_metadata: { username },
+      user_metadata: { username, language: lang },
     });
 
     if (createError) {
