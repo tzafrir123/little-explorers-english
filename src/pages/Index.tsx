@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, Star, Trophy } from "lucide-react";
+import { langNameHebrew } from "@/lib/i18n";
 
 const games = [
   {
@@ -67,6 +68,7 @@ const games = [
 const Index = () => {
   const navigate = useNavigate();
   const { profile, signOut } = useAuth();
+  const lang = profile?.language ?? "en";
 
   return (
     <div className="min-h-screen flex pt-12 p-4" dir="rtl">
@@ -114,7 +116,7 @@ const Index = () => {
             📚
           </motion.div>
           <h1 className="text-4xl font-extrabold text-foreground mb-2">
-            בואו נלמד אנגלית!
+            !בואו נלמד {langNameHebrew(lang)}
           </h1>
           <p className="text-lg text-muted-foreground font-medium">
             בחרו משחק והתחילו ללמוד 🎮
