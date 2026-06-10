@@ -325,10 +325,24 @@ for (const w of words) {
 
 export const uniqueWordList = uniqueWords;
 
-export function getRandomWords(count: number, exclude?: WordItem[]): WordItem[] {
+import { wordsRo } from "./words_ro";
+
+export type Lang = "en" | "ro";
+
+const POOLS: Record<Lang, WordItem[]> = {
+  en: uniqueWords,
+  ro: wordsRo,
+};
+
+export function getWordPool(lang: Lang = "en"): WordItem[] {
+  return POOLS[lang] ?? uniqueWords;
+}
+
+export function getRandomWords(count: number, exclude?: WordItem[], lang: Lang = "en"): WordItem[] {
+  const pool = getWordPool(lang);
   const available = exclude
-    ? uniqueWords.filter((w) => !exclude.some((e) => e.english === w.english))
-    : [...uniqueWords];
+    ? pool.filter((w) => !exclude.some((e) => e.english === w.english))
+    : [...pool];
   const shuffled = available.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
