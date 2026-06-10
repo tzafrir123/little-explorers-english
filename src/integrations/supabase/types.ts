@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          language: string
           last_login_at: string | null
           level: number
           score: number
@@ -29,6 +30,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          language?: string
           last_login_at?: string | null
           level?: number
           score?: number
@@ -40,6 +42,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          language?: string
           last_login_at?: string | null
           level?: number
           score?: number

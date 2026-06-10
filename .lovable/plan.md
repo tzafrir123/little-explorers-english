@@ -1,41 +1,40 @@
 
+## מטרה
+לאפשר לילד לבחור בעת ההרשמה את שפת הלימוד (אנגלית כברירת מחדל, או רומנית). השפה תישמר על הפרופיל ותשפיע על המילים, ההנחיות וההגייה הקולית במשחקים. משתמשים קיימים יישארו באנגלית.
 
-## Plan
+## שינויי DB
+- הוספת עמודה `language text not null default 'en'` בטבלת `profiles` (ערכים אפשריים: `'en'`, `'ro'`).
+- עדכון כל המשתמשים הקיימים ל-`'en'` (נעשה אוטומטית ע"י ה-default).
+- עדכון `handle_new_user` כך שיקרא `raw_user_meta_data->>'language'` ויאחסן אותה (ברירת מחדל `'en'`).
+- עדכון ה-Edge Function `signup` כך שיקבל `language` ויעבירה ל-`user_metadata`.
 
-### Task 1: Update SpellWordGame wrong answer behavior
-**Current**: When wrong, replaces placed letters with correct answer in the same row (red).
-**Change**: Keep the wrong answer displayed in red, and show the correct answer in green boxes below (exactly like WordOrderGame). Remove the auto-replace logic. Add `wrongPlaced` state.
+## שינויי מאגרי תוכן
+### `src/data/words.ts`
+- מבנה חדש לפריט מילה:
+  ```ts
+  interface WordItem {
+    en: string;      // היה english
+    ro: string;      // חדש
+    hebrew: string;
+    emoji: string;
+    category: string;
+  }
+  ```
+- הרחבה ל-500 פריטים ייחודיים (היום ~277), כל פריט עם תרגום אנגלי + רומני + עברית + אימוג'י.
+- `getRandomWords` יקבל פרמטר נוסף `lang: 'en' | 'ro'` ויחזיר אותו `WordItem` (כל הקומפוננטות יקראו `word[lang]` במקום `word.english`).
 
-**File**: `src/components/games/SpellWordGame.tsx`
-- Add `wrongPlaced` state
-- On wrong: save wrong letters to `wrongPlaced`, keep them displayed in red
-- Show correct answer in green boxes below with "✅ התשובה הנכונה:" label
-- Remove the setTimeout/auto-advance logic, rely on "הבא" button only
+### `src/data/sentences.ts`
+- מבנה חדש:
+  ```ts
+  interface SentenceTemplate {
+    en: string[];
+    ro: string[];
+    hebrewHint: string;
+  }
+  ```
+- הרחבה כך שיהיו 500 משפטים (היום ~480 משפטים באנגלית), עם תרגום רומני מקביל לכל אחד.
 
-### Task 2: Add "בטא את המילה" (Pronounce the Word) game
-A new pronunciation game using the Web Speech Recognition API (`webkitSpeechRecognition` / `SpeechRecognition`).
-
-**New files**:
-- `src/components/games/PronounceGame.tsx`
-- `src/pages/PronouncePage.tsx`
-
-**Modified files**:
-- `src/pages/Index.tsx` — add game card after Memory, with emoji 🗣️, title "בטא את המילה", description "בטאו את המילה בצורה הנכונה"
-- `src/App.tsx` — add route `/game/pronounce`
-
-**Game logic**:
-- 12 rounds, no word repetition (uses `usedWordsRef` pattern)
-- Each round shows: emoji image + Hebrew word
-- "רמז" button reveals the English word (how to pronounce it)
-- Record button: first click starts recording, second click stops. Instructions displayed on page
-- Uses `webkitSpeechRecognition` with `lang: 'en-US'` to capture speech
-- Compare recognized text (lowercased) against target word (lowercased)
-- If correct → score +1, show "הבא" button
-- If wrong → decrement attempts (start at 3). Show remaining attempts
-- After 3 failed attempts → use `SpeechSynthesis` API to speak the correct word, show "הבא" button
-- Uses same visual style as other games (GameHeader, GameComplete, framer-motion animations)
-
-**Speech APIs used** (browser built-in, no external dependencies):
-- `SpeechRecognition` / `webkitSpeechRecognition` for listening
-- `SpeechSynthesisUtterance` for speaking the correct answer
-
+## שכבת שפה באפליקציה
+- הוספת `language` ל-interface `Profile` ב-`AuthContext.tsx`, וחשיפתו דרך ה-context.
+- יצירת hook קטן `useLang()` שיחזיר `profile?.language ?? 'en'` לקריאה נוחה במשחקים.
+- מילון UI קטן ב-`src/lib/i18n.ts` עם המחרוזות הדינמיות (שמות שפות, השאלות שמתייח
