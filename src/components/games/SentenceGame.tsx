@@ -2,8 +2,9 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GameHeader from "../GameHeader";
 import GameComplete from "../GameComplete";
-import { sentenceTemplates, distractorWords, SentenceTemplate } from "@/data/sentences";
+import { getSentencePool, distractorWords, SentenceTemplate } from "@/data/sentences";
 import { shuffle } from "@/data/words";
+import { useAuth } from "@/contexts/AuthContext";
 
 const TOTAL_ROUNDS = 12;
 
@@ -97,6 +98,9 @@ interface SentenceGameProps {
 }
 
 const SentenceGame = ({ onBack }: SentenceGameProps) => {
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
+  const sentenceTemplates = getSentencePool(lang);
   const [level, setLevel] = useState<number | null>(null);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);

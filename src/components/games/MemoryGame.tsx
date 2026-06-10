@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PAIRS = 12;
 
@@ -13,8 +14,8 @@ interface Card {
   matched: boolean;
 }
 
-function generateCards(): Card[] {
-  const selected = getRandomWords(PAIRS);
+function generateCards(lang: "en" | "ro" = "en"): Card[] {
+  const selected = getRandomWords(PAIRS, undefined, lang);
   const cards: Card[] = [];
   selected.forEach((word, i) => {
     cards.push({ id: i * 2, wordItem: word, type: "word", matched: false });
@@ -29,7 +30,9 @@ const cardBackColors = [
 ];
 
 const MemoryGame = () => {
-  const [cards, setCards] = useState<Card[]>(generateCards);
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
+  const [cards, setCards] = useState<Card[]>(() => generateCards(lang));
   const [flipped, setFlipped] = useState<number[]>([]);
   const [matched, setMatched] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -91,7 +94,7 @@ const MemoryGame = () => {
   };
 
   const restart = () => {
-    setCards(generateCards());
+    setCards(generateCards(lang));
     setFlipped([]);
     setMatched(0);
     setIsComplete(false);

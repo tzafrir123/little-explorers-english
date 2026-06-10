@@ -82,7 +82,7 @@ const QuizGame = () => {
 
   const restart = () => {
     usedWordsRef.current = [];
-    const next = generateRound([]);
+    const next = generateRound([], lang);
     usedWordsRef.current = [next.correct];
     setRound(0);
     setScore(0);

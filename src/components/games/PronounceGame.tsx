@@ -4,6 +4,8 @@ import { getRandomWords, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 import { Mic, MicOff, Volume2, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { SPEECH_LOCALES } from "@/lib/i18n";
 
 const ROUNDS = 12;
 const MAX_ATTEMPTS = 3;
@@ -14,12 +16,15 @@ const SpeechRecognitionAPI =
     : null;
 
 const PronounceGame = () => {
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
+  const speechLocale = SPEECH_LOCALES[lang];
   const usedWordsRef = useRef<WordItem[]>([]);
   const recognitionRef = useRef<any>(null);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [currentWord, setCurrentWord] = useState<WordItem>(() => {
-    const w = getRandomWords(1, [])[0];
+    const w = getRandomWords(1, [], lang)[0];
     usedWordsRef.current = [w];
     return w;
   });
@@ -36,19 +41,19 @@ const PronounceGame = () => {
 
   const speakWord = useCallback(() => {
     const utterance = new SpeechSynthesisUtterance(currentWord.english);
-    utterance.lang = "en-US";
+    utterance.lang = speechLocale;
     utterance.rate = 0.8;
     speechSynthesis.speak(utterance);
-  }, [currentWord]);
+  }, [currentWord, speechLocale]);
 
   const [showWrongX, setShowWrongX] = useState(false);
 
-  const speakText = useCallback((text: string, lang = "en-US") => {
+  const speakText = useCallback((text: string, locale: string = speechLocale) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
+    utterance.lang = locale;
     utterance.rate = 0.8;
     speechSynthesis.speak(utterance);
-  }, []);
+  }, [speechLocale]);
 
   const handleResult = useCallback(
     (transcript: string) => {
@@ -95,7 +100,7 @@ const PronounceGame = () => {
 
     // Start recording
     const recognition = new SpeechRecognitionAPI();
-    recognition.lang = "en-US";
+    recognition.lang = speechLocale;
     recognition.interimResults = false;
     recognition.maxAlternatives = 3;
 
@@ -131,7 +136,7 @@ const PronounceGame = () => {
     if (round + 1 >= ROUNDS) {
       setIsComplete(true);
     } else {
-      const next = getRandomWords(1, usedWordsRef.current)[0];
+      const next = getRandomWords(1, usedWordsRef.current, lang)[0];
       usedWordsRef.current = [...usedWordsRef.current, next];
       setRound((r) => r + 1);
       setCurrentWord(next);
@@ -146,7 +151,7 @@ const PronounceGame = () => {
 
   const restart = () => {
     usedWordsRef.current = [];
-    const w = getRandomWords(1, [])[0];
+    const w = getRandomWords(1, [], lang)[0];
     usedWordsRef.current = [w];
     setRound(0);
     setScore(0);
