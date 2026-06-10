@@ -79,7 +79,14 @@ const D: RoTuple[] = [
   ["Cires","דובדבן","🍒","food"],
   ["Cocos","קוקוס","🥥","food"],
   ["Avocado","אבוקדו","🥑","food"],
-  ["Ceap
+  ["Ceapa","בצל","🧅","food"],
+  ["Usturoi","שום","🧄","food"],
+  ["Floricele","פופקורן","🍿","food"],
+  ["Mango","מנגו","🥭","food"],
+  ["Pepene","מלון","🍈","food"],
+  ["Piersica","אפרסק","🍑","food"],
+  ["Ananas","אננס","🍍","food"],
+  ["Sandvis","סנדוויץ'","🥪","food"],
 ];
 
 export const wordsRo: WordItem[] = D.map(([english, hebrew, emoji, category]) => ({
