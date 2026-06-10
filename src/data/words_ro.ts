@@ -230,7 +230,27 @@ const D: RoTuple[] = [
   ["Parc","פארק","🏞️","places"],
   ["Plaja","חוף","🏖️","places"],
   ["Insula","אי","🏝️","places"],
-  ["Pod","גשר","
+  ["Pod","גשר","🌉","places"],
+  ["Turn","מגדל","🗼","places"],
+  ["Cort","אוהל","⛺","places"],
+  ["Biblioteca","ספרייה","📚","places"],
+  ["Circ","קרקס","🎪","places"],
+  // Misc
+  ["Diamant","יהלום","💎","misc"],
+  ["Medalie","מדליה","🏅","misc"],
+  ["Trofeu","גביע","🏆","misc"],
+  ["Sabie","חרב","⚔️","misc"],
+  ["Scut","מגן","🛡️","misc"],
+  ["Fantoma","רוח רפאים","👻","misc"],
+  ["Dragon","דרקון","🐉","misc"],
+  ["Inorog","חד קרן","🦄","misc"],
+  ["Dinozaur","דינוזאור","🦕","misc"],
+  ["Om de zapada","בובת שלג","⛄","misc"],
+  ["Dovleac","דלעת","🎃","misc"],
+  ["Lacat","מנעול","🔒","misc"],
+  ["Pana","נוצה","🪶","misc"],
+  ["Planeta","כוכב לכת","🪐","misc"],
+  ["Extraterestru","חייזר","👽","misc"],
 ];
 
 export const wordsRo: WordItem[] = D.map(([english, hebrew, emoji, category]) => ({
