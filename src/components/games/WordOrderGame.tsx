@@ -1,7 +1,8 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { shuffle } from "@/data/words";
-import { sentenceTemplates } from "@/data/sentences";
+import { getSentencePool } from "@/data/sentences";
+import { useAuth } from "@/contexts/AuthContext";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
 
@@ -32,6 +33,9 @@ const HintButton = ({ hint }: { hint: string }) => {
 };
 
 const WordOrderGame = () => {
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
+  const sentenceTemplates = getSentencePool(lang);
   const [level, setLevel] = useState<number | null>(null);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);

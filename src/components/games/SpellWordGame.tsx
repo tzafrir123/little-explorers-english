@@ -3,22 +3,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ROUNDS = 12;
 
-function generateRound(usedWords: WordItem[]) {
-  const word = getRandomWords(1, usedWords)[0];
+function generateRound(usedWords: WordItem[], lang: "en" | "ro" = "en") {
+  const word = getRandomWords(1, usedWords, lang)[0];
   const letters = word.english.toUpperCase().split("");
   const shuffled = shuffle(letters);
   return { word, letters, shuffled };
 }
 
 const SpellWordGame = () => {
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
   const usedWordsRef = useRef<WordItem[]>([]);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [currentRound, setCurrentRound] = useState(() => {
-    const r = generateRound([]);
+    const r = generateRound([], lang);
     usedWordsRef.current = [r.word];
     return r;
   });
@@ -62,7 +65,7 @@ const SpellWordGame = () => {
     if (round + 1 >= ROUNDS) {
       setIsComplete(true);
     } else {
-      const next = generateRound(usedWordsRef.current);
+      const next = generateRound(usedWordsRef.current, lang);
       usedWordsRef.current = [...usedWordsRef.current, next.word];
       setRound((r) => r + 1);
       setCurrentRound(next);
@@ -83,7 +86,7 @@ const SpellWordGame = () => {
 
   const restart = () => {
     usedWordsRef.current = [];
-    const next = generateRound([]);
+    const next = generateRound([], lang);
     usedWordsRef.current = [next.word];
     setRound(0);
     setScore(0);

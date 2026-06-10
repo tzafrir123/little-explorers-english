@@ -8,10 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { UserPlus, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import type { Lang } from "@/lib/i18n";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [language, setLanguage] = useState<Lang>("en");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ const SignupPage = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { error } = await signUp(username, password);
+    const { error } = await signUp(username, password, language);
     setLoading(false);
     if (error) {
       setError(error);
@@ -93,6 +95,31 @@ const SignupPage = () => {
               </button>
             </div>
             <p className="text-xs text-muted-foreground mt-1">לפחות 6 תווים (אפשר גם מספרים)</p>
+          </div>
+
+          {/* Language picker - kid-friendly big buttons */}
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-2">🌍 שפה ללמידה</label>
+            <div className="grid grid-cols-2 gap-3">
+              {([
+                { value: "en" as Lang, label: "אנגלית", flag: "🇬🇧" },
+                { value: "ro" as Lang, label: "רומנית", flag: "🇷🇴" },
+              ]).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setLanguage(opt.value)}
+                  className={`h-14 rounded-2xl border-2 font-bold text-lg flex items-center justify-center gap-2 transition-all ${
+                    language === opt.value
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-input bg-background text-muted-foreground"
+                  }`}
+                >
+                  <span className="text-2xl">{opt.flag}</span>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Error message */}

@@ -7,6 +7,13 @@ export interface SentenceTemplate {
   hebrewHint: string;
 }
 
+import { sentenceTemplatesRo } from "./sentences_ro";
+import type { Lang } from "./words";
+
+export function getSentencePool(lang: Lang = "en"): SentenceTemplate[] {
+  return lang === "ro" ? sentenceTemplatesRo : sentenceTemplates;
+}
+
 // Large vocabulary bank - 1000+ unique words used across sentences
 export const sentenceTemplates: SentenceTemplate[] = [
   // 4-word sentences (for WordOrder level 1)

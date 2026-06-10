@@ -3,23 +3,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getRandomWords, shuffle, WordItem } from "@/data/words";
 import GameHeader from "@/components/GameHeader";
 import GameComplete from "@/components/GameComplete";
+import { useAuth } from "@/contexts/AuthContext";
+import { langNameHebrew } from "@/lib/i18n";
 
 const ROUNDS = 12;
 
-function generateRound(usedWords: WordItem[]) {
-  const correct = getRandomWords(1, usedWords)[0];
-  const wrong = getRandomWords(3, [...usedWords, correct]);
+function generateRound(usedWords: WordItem[], lang: "en" | "ro" = "en") {
+  const correct = getRandomWords(1, usedWords, lang)[0];
+  const wrong = getRandomWords(3, [...usedWords, correct], lang);
   const options = shuffle([correct, ...wrong]);
   return { correct, options };
 }
 
 const WordPictureGame = () => {
+  const { profile } = useAuth();
+  const lang = profile?.language ?? "en";
   const usedWordsRef = useRef<WordItem[]>([]);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [currentRound, setCurrentRound] = useState(() => {
-    const r = generateRound([]);
+    const r = generateRound([], lang);
     usedWordsRef.current = [r.correct];
     return r;
   });
@@ -42,7 +46,7 @@ const WordPictureGame = () => {
     if (round + 1 >= ROUNDS) {
       setIsComplete(true);
     } else {
-      const next = generateRound(usedWordsRef.current);
+      const next = generateRound(usedWordsRef.current, lang);
       usedWordsRef.current = [...usedWordsRef.current, next.correct];
       setRound((r) => r + 1);
       setCurrentRound(next);
@@ -53,7 +57,7 @@ const WordPictureGame = () => {
 
   const restart = () => {
     usedWordsRef.current = [];
-    const next = generateRound([]);
+    const next = generateRound([], lang);
     usedWordsRef.current = [next.correct];
     setRound(0);
     setScore(0);
@@ -92,7 +96,7 @@ const WordPictureGame = () => {
           </motion.div>
 
           <p className="text-xl font-bold text-muted-foreground">
-            ?מה השם באנגלית
+            ?מה השם ב{langNameHebrew(lang)}
           </p>
 
           <div className="grid grid-cols-2 gap-3 w-full">
