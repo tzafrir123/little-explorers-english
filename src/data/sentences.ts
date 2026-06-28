@@ -14,6 +14,24 @@ export function getSentencePool(lang: Lang = "en"): SentenceTemplate[] {
   return lang === "ro" ? sentenceTemplatesRo : sentenceTemplates;
 }
 
+// Build a distractor pool from sentence vocabulary for non-English languages.
+// Keeps every word in the same language as the prompt so we never leak English.
+function buildPoolFromTemplates(templates: SentenceTemplate[]): Record<string, string[]> {
+  const set = new Set<string>();
+  templates.forEach((t) => t.sentence.forEach((w) => set.add(w.toLowerCase())));
+  return { all: Array.from(set) };
+}
+
+let _roPool: Record<string, string[]> | null = null;
+
+export function getDistractorPool(lang: Lang = "en"): Record<string, string[]> {
+  if (lang === "ro") {
+    if (!_roPool) _roPool = buildPoolFromTemplates(sentenceTemplatesRo);
+    return _roPool;
+  }
+  return distractorWords;
+}
+
 // Large vocabulary bank - 1000+ unique words used across sentences
 export const sentenceTemplates: SentenceTemplate[] = [
   // 4-word sentences (for WordOrder level 1)

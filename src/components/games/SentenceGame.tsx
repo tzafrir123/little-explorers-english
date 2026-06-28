@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import GameHeader from "../GameHeader";
 import GameComplete from "../GameComplete";
-import { getSentencePool, distractorWords, SentenceTemplate } from "@/data/sentences";
+import { getSentencePool, getDistractorPool, SentenceTemplate } from "@/data/sentences";
 import { shuffle } from "@/data/words";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -14,9 +14,12 @@ function getRandomItems<T>(arr: T[], count: number, exclude?: T[]): T[] {
   return shuffled.slice(0, count);
 }
 
-function generateDistractorWord(correctWord: string): string {
+function generateDistractorWord(
+  correctWord: string,
+  pool: Record<string, string[]>
+): string {
   const lower = correctWord.toLowerCase();
-  for (const [, words] of Object.entries(distractorWords)) {
+  for (const [, words] of Object.entries(pool)) {
     if (words.includes(lower)) {
       const others = words.filter(w => w !== lower);
       if (others.length > 0) {
@@ -24,13 +27,18 @@ function generateDistractorWord(correctWord: string): string {
       }
     }
   }
-  const others = distractorWords.nouns.filter(w => w !== lower);
+  // Fallback: pick from the first available group in the pool.
+  const firstGroup =
+    pool.nouns ?? pool.all ?? Object.values(pool)[0] ?? [];
+  const others = firstGroup.filter(w => w !== lower);
+  if (others.length === 0) return correctWord;
   return others[Math.floor(Math.random() * others.length)];
 }
 
 function generateOptions(
   template: SentenceTemplate,
   blankIndices: number[],
+  pool: Record<string, string[]>,
   optionCount: number = 4
 ): string[][] {
   const correctAnswer = blankIndices.map(i => template.sentence[i]);
@@ -40,7 +48,7 @@ function generateOptions(
   while (options.length < optionCount && options.length < 100) {
     const wrongAnswer = blankIndices.map(i => {
       const correct = template.sentence[i];
-      return generateDistractorWord(correct);
+      return generateDistractorWord(correct, pool);
     });
     const wrongKey = wrongAnswer.join("|").toLowerCase();
     const isDuplicate = options.some(o => o.join("|").toLowerCase() === wrongKey);
@@ -101,6 +109,7 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
   const { profile } = useAuth();
   const lang = profile?.language ?? "en";
   const sentenceTemplates = getSentencePool(lang);
+  const distractorPool = getDistractorPool(lang);
   const [level, setLevel] = useState<number | null>(null);
   const [round, setRound] = useState(0);
   const [score, setScore] = useState(0);
@@ -132,7 +141,7 @@ const SentenceGame = ({ onBack }: SentenceGameProps) => {
     usedTemplatesRef.current.add(index);
 
     const blankIndices = selectBlankIndices(template.sentence, level);
-    const options = generateOptions(template, blankIndices);
+    const options = generateOptions(template, blankIndices, distractorPool);
     const correctAnswer = blankIndices.map(i => template.sentence[i]);
 
     return { template, blankIndices, options, correctAnswer };
