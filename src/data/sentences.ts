@@ -8,10 +8,11 @@ export interface SentenceTemplate {
 }
 
 import { sentenceTemplatesRo } from "./sentences_ro";
+import { sentencesExtra } from "./sentences_extra";
 import type { Lang } from "./words";
 
 export function getSentencePool(lang: Lang = "en"): SentenceTemplate[] {
-  return lang === "ro" ? sentenceTemplatesRo : sentenceTemplates;
+  return lang === "ro" ? sentenceTemplatesRo : allEnglishTemplates;
 }
 
 // Build a distractor pool from sentence vocabulary for non-English languages.
