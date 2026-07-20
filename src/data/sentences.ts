@@ -8,10 +8,11 @@ export interface SentenceTemplate {
 }
 
 import { sentenceTemplatesRo } from "./sentences_ro";
+import { sentencesExtra } from "./sentences_extra";
 import type { Lang } from "./words";
 
 export function getSentencePool(lang: Lang = "en"): SentenceTemplate[] {
-  return lang === "ro" ? sentenceTemplatesRo : sentenceTemplates;
+  return lang === "ro" ? sentenceTemplatesRo : allEnglishTemplates;
 }
 
 // Build a distractor pool from sentence vocabulary for non-English languages.
@@ -506,10 +507,21 @@ export const distractorWords = {
   conjunctions: ["and", "but", "or", "so", "yet", "nor", "for", "because", "although", "while"]
 };
 
+// Combined English pool: base curated templates + programmatically generated extras.
+// De-duplicated by joined sentence text.
+const _seenSentences = new Set<string>();
+export const allEnglishTemplates: SentenceTemplate[] = [];
+for (const t of [...sentenceTemplates, ...sentencesExtra]) {
+  const key = t.sentence.join(" ").toLowerCase();
+  if (_seenSentences.has(key)) continue;
+  _seenSentences.add(key);
+  allEnglishTemplates.push(t);
+}
+
 // Get unique vocabulary count
 export function getSentenceVocabularyCount(): number {
   const allWords = new Set<string>();
-  sentenceTemplates.forEach(t => t.sentence.forEach(w => allWords.add(w.toLowerCase())));
+  allEnglishTemplates.forEach(t => t.sentence.forEach(w => allWords.add(w.toLowerCase())));
   Object.values(distractorWords).forEach(arr => arr.forEach(w => allWords.add(w.toLowerCase())));
   return allWords.size;
 }

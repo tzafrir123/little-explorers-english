@@ -313,12 +313,15 @@ export const words: WordItem[] = [
   { english: "Crystal", hebrew: "קריסטל", emoji: "🔮", category: "misc" },
 ];
 
-// Remove duplicates by english name
+import { wordsExtra } from "./words_extra";
+
+// Merge base and extra pools, removing duplicates by english name (case-insensitive).
 const seen = new Set<string>();
 const uniqueWords: WordItem[] = [];
-for (const w of words) {
-  if (!seen.has(w.english)) {
-    seen.add(w.english);
+for (const w of [...words, ...wordsExtra]) {
+  const key = w.english.toLowerCase();
+  if (!seen.has(key)) {
+    seen.add(key);
     uniqueWords.push(w);
   }
 }
