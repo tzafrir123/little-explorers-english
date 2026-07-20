@@ -116,7 +116,7 @@ const Index = () => {
             📚
           </motion.div>
           <h1 className="text-4xl font-extrabold text-foreground mb-2">
-            !בואו נלמד {langNameHebrew(lang)}
+            בואו נלמד {langNameHebrew(lang)}!
           </h1>
           <p className="text-lg text-muted-foreground font-medium">
             בחרו משחק והתחילו ללמוד 🎮
